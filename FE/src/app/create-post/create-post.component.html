@@ -1,0 +1,33 @@
+<div class="create-post-container">
+    <div class="header">
+      <!-- <div class="username">{{nameOfUsers}}</div> -->
+      <button class="cancel-button" (click)="cancelPost()">Cancel</button>
+    </div>
+    
+    <textarea
+      class="post-textarea"
+      placeholder="What's on your mind?"
+      [(ngModel)]="postContent"
+    ></textarea>
+    
+    <div class="actions">
+      <!-- <mat-icon (click)="onImageUploadClick()">image</mat-icon>
+      <mat-icon (click)="openOptions()">more_horiz</mat-icon> -->
+    </div>
+  
+    <input type="file" #fileInput (change)="onFileSelected($event)" hidden />
+    <!-- <img *ngIf="imagePreview" [src]="imagePreview" alt="Image Preview" class="image-preview" /> -->
+    
+    <button class="submit-button" (click)="submitPost()">Post</button>
+  </div>
+  
+  <!-- Snackbar content -->
+  <ng-template #options>
+    <div class="options-container">
+      <button mat-button (click)="addMedia()">Media</button>
+      <button mat-button (click)="addPoll()">Poll</button>
+      <button mat-button (click)="addDocument()">Document</button>
+      <button mat-button (click)="addVideo()">Video</button>
+    </div>
+  </ng-template>
+  

@@ -10,6 +10,7 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { ChatBoxComponent } from './chat-box/chat-box.component';
 import { FormsModule } from '@angular/forms';
+import { CreatePostComponent } from './create-post/create-post.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { FormsModule } from '@angular/forms';
     SignupComponent,
     HomePageComponent,
     UserListComponent,
-    ChatBoxComponent
+    ChatBoxComponent,
+    CreatePostComponent
   ],
   imports: [
     BrowserModule,
