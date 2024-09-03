@@ -1,1 +1,43 @@
-<p>user-list works!</p>
+<div class="user-list-container">
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Search users..."
+        [(ngModel)]="searchTerm"
+        (input)="filterUsers()"
+      />
+    </div>
+  
+    <!-- Conversations Section -->
+    <div class="conversations">
+      <h3>Conversations</h3>
+      <ul class="conversation-list">
+        <li
+          *ngFor="let user of filteredUsers"
+          (click)="selectUser(user)"
+          [class.active]="user === selectedUser"
+        >
+          <img [src]="user.avatar" alt="User Avatar" class="user-avatar" />
+          <div class="user-details">
+            <p class="user-name">{{ user.name }}</p>
+            <p class="last-message">{{ user.lastMessage }}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  
+    <!-- User List Section -->
+    <div class="user-list">
+      <h3>All Users</h3>
+      <ul class="all-user-list">
+        <li *ngFor="let user of users" (click)="startConversation(user)">
+          <img [src]="user.avatar" alt="User Avatar" class="user-avatar" />
+          <div class="user-details">
+            <p class="user-name">{{ user.name }}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  

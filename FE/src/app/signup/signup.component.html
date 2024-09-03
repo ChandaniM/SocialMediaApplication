@@ -1,1 +1,79 @@
-<p>signup works!</p>
+<div class="create-account-container">
+    <div class="create-account-box">
+      <h2>Create Account</h2>
+      <form (ngSubmit)="onSubmit()" #createAccountForm="ngForm">
+        <!-- Name Input -->
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class="form-control"
+            required
+            [(ngModel)]="name"
+            #nameInput="ngModel"
+          />
+          <div
+            *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)"
+            class="error"
+          >
+            Name is required.
+          </div>
+        </div>
+  
+        <!-- Email Input -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-control"
+            required
+            [(ngModel)]="email"
+            #emailInput="ngModel"
+          />
+          <div
+            *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
+            class="error"
+          >
+            Please enter a valid email.
+          </div>
+        </div>
+  
+        <!-- Password Input -->
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            required
+            [(ngModel)]="password"
+            #passwordInput="ngModel"
+          />
+          <div
+            *ngIf="
+              passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)
+            "
+            class="error"
+          >
+            Password is required.
+          </div>
+        </div>
+  
+        <!-- Submit Button -->
+        <button type="submit" class="btn" [disabled]="createAccountForm.invalid">
+          Create Account
+        </button>
+      </form>
+  
+      <!-- Back to Login Link -->
+      <p class="login-link">
+        Already have an account? <a routerLink="/login">Login</a>
+      </p>
+    </div>
+  </div>
+  
