@@ -18,10 +18,10 @@
           (click)="selectUser(user)"
           [class.active]="user === selectedUser"
         >
-          <img [src]="user.avatar" alt="User Avatar" class="user-avatar" />
+          <!-- <img [src]="user.avatar" alt="User Avatar" class="user-avatar" /> -->
           <div class="user-details">
-            <p class="user-name">{{ user.name }}</p>
-            <p class="last-message">{{ user.lastMessage }}</p>
+            <p class="user-name">{{ user.username }}</p>
+            <!-- <p class="last-message">{{ user.lastMessage }}</p> -->
           </div>
         </li>
       </ul>
@@ -32,9 +32,9 @@
       <h3>All Users</h3>
       <ul class="all-user-list">
         <li *ngFor="let user of users" (click)="startConversation(user)">
-          <img [src]="user.avatar" alt="User Avatar" class="user-avatar" />
+          <!-- <img [src]="user.avatar" alt="User Avatar" class="user-avatar" /> -->
           <div class="user-details">
-            <p class="user-name">{{ user.name }}</p>
+            <p class="user-name">{{ user.username }}</p>
           </div>
         </li>
       </ul>

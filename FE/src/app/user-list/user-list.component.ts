@@ -1,11 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-interface User {
-  id: number;
-  name: string;
-  avatar: string;
-  lastMessage: string;
-}
+import { UserService } from '../Service/user.service';
+import { User } from '../login/login.component';
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
@@ -13,44 +9,22 @@ interface User {
 })
 export class UserListComponent {
   searchTerm: string = '';
-  users: User[] = [
-    {
-      id: 1,
-      name: 'John Doe',
-      avatar: 'https://via.placeholder.com/40',
-      lastMessage: 'Hey there! How are you?',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      avatar: 'https://via.placeholder.com/40',
-      lastMessage: 'Did you check the report?',
-    },
-    {
-      id: 3,
-      name: 'Alice Johnson',
-      avatar: 'https://via.placeholder.com/40',
-      lastMessage: 'Let’s catch up tomorrow!',
-    },
-    {
-      id: 4,
-      name: 'Bob Brown',
-      avatar: 'https://via.placeholder.com/40',
-      lastMessage: 'Can you send me the files?',
-    },
-  ];
+  users: User[] = []
   
 
   filteredUsers: User[] = [];
   selectedUser: User | null = null;
-constructor(private route:Router){}
+constructor(private route:Router , public userService:UserService){}
   ngOnInit() {
-    this.filteredUsers = this.users;
+    this.userService.getAllUserList().subscribe((value:Array<User>)=>{
+      this.users = value
+      // this.filteredUsers = value;
+    })
   }
 
   filterUsers() {
     this.filteredUsers = this.users.filter(user =>
-      user.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      user.username.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
@@ -62,6 +36,8 @@ constructor(private route:Router){}
 
   startConversation(user: User) {
     // Logic to start a conversation with the selected user
-    alert(`Starting conversation with ${user.name}`);
+    alert(`Starting conversation with ${user.username}`);
+    console.log(user)
+    this.route.navigate(['chat/'+user.id])
   }
 }
