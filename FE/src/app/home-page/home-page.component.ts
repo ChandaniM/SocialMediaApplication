@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PostService } from '../Service/post.service';
+import { LoginService } from '../Service/login.service';
 
 @Component({
   selector: 'app-home-page',
@@ -9,11 +10,11 @@ import { PostService } from '../Service/post.service';
 export class HomePageComponent {
   posts: any[] = [];
 
-  constructor(private postService: PostService) { }
+  constructor(private postService: PostService , public loginService:LoginService) { }
 
   ngOnInit(): void {
-    this.postService.getPosts().subscribe((posts) => {
-      this.posts = posts;
-    });
+    // this.postService.getPosts().subscribe((posts) => {
+    //   this.posts = posts;
+    // });
   }
 }
