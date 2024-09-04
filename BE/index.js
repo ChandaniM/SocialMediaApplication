@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const { Pool } = require("pg");
 const login = require("./router/login");
+const register = require("./router/registeruser");
 
 const pool = new Pool({
   user: "postgres",
@@ -22,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 
-
+app.use(register)
 app.use(login); 
 
 

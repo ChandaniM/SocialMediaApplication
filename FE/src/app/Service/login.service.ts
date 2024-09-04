@@ -33,4 +33,12 @@ export class LoginService {
   isAuthenticated(): boolean {
     return this.isLoggedIn;
   }
+  register(username: string,email: string,password: string): Observable<any> {
+    return this.http.post<any>(this.BASE_URL + "register", {
+      username,
+      email,
+      password,
+    })
+  }
+
 }

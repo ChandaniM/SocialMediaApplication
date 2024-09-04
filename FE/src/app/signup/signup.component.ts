@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { LoginService } from '../Service/login.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -9,14 +11,14 @@ export class SignupComponent {
   name: string = '';
   email: string = '';
   password: string = '';
-
+constructor(public loginService:LoginService , public route:Router){}
   onSubmit() {
     if (this.name && this.email && this.password) {
-      // Perform create account logic here, such as sending a request to a server.
-      console.log('Name:', this.name);
-      console.log('Email:', this.email);
-      console.log('Password:', this.password);
-      alert('Account created successfully!');
+      this.loginService.register(this.name,this.email , this.password).subscribe((response)=>{
+        console.log(response)
+        alert('Account created successfully!');
+        this.route.navigate(['/login'])
+      })
     }
   }
 }
