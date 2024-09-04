@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 interface User {
   id: number;
   name: string;
@@ -39,9 +40,10 @@ export class UserListComponent {
     },
   ];
   
+
   filteredUsers: User[] = [];
   selectedUser: User | null = null;
-
+constructor(private route:Router){}
   ngOnInit() {
     this.filteredUsers = this.users;
   }
@@ -54,6 +56,8 @@ export class UserListComponent {
 
   selectUser(user: User) {
     this.selectedUser = user;
+    console.log(this.selectedUser , "this is selected user")
+    this.route.navigate(['chat/'+this.selectedUser['id']])
   }
 
   startConversation(user: User) {
