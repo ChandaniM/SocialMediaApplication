@@ -1,11 +1,16 @@
-const http = require("http");
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
-const host = 'localhost';
-const port = 8000;
-
-const requestListener = function (req, res) {};
-
-const server = http.createServer(requestListener);
-server.listen(port, host, () => {
-    console.log(`Server is running on http://${host}:${port}`);
-});
+const port = 3000;  
+const app = express();
+app.use(cors({ origin: "*" }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use("/",(req,res)=>{
+    res.send("Hello from Backend")
+  })
+const server = app.listen(port, () => {
+    console.log(`Server listening at http://localhost:${port}`);
+  });
+  
