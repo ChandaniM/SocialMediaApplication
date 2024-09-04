@@ -1,20 +1,46 @@
 import { Component } from '@angular/core';
+import { LoginService } from '../Service/login.service';
+import { Router } from '@angular/router';
+export interface LoginResponse {
+  user: User;
+  message: string;
+  isLoginIn: boolean;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+}
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
+
+
 export class LoginComponent {
   email: string = '';
   password: string = '';
+  
+  constructor(public loginService: LoginService, private route: Router) { }
 
   onSubmit() {
     if (this.email && this.password) {
-      // Perform login logic here, such as sending a request to a server.
-      console.log('Email:', this.email);
-      console.log('Password:', this.password);
-      alert('Login successful!');
+      this.loginService.login(this.email, this.password).subscribe((response: LoginResponse) => {
+        console.log(response);
+        if (response.isLoginIn) {
+          alert('Login successful!');
+          this.route.navigate(['/homepage'])
+        } else {
+          alert('Login failed!');
+        }
+      }, error => {
+        console.error('Login error:', error);
+        alert('Login failed!');
+      });
     }
   }
 }
