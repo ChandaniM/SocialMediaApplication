@@ -14,9 +14,16 @@ export class HomePageComponent {
   constructor(private postService: PostService , public loginService:LoginService , public userService : UserService) { }
 
   ngOnInit(): void {
+    let id  = JSON.parse(localStorage.getItem('UserData') || '{}')['id'];
+    console.log(id)
     this.userService.getAllUserList().subscribe()
-    // this.postService.getPosts().subscribe((posts) => {
-    //   this.posts = posts;
-    // });
+    this.postService.getPosts(id).subscribe({
+      next: (posts) => {
+        this.posts = posts;
+        console.log('Posts:', this.posts);  // This will correctly show the posts after they are fetched
+      },
+      error: (err) => console.error('Error fetching posts:', err),
+    });
+    console.log(this.posts)
   }
 }

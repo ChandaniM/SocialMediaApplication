@@ -8,7 +8,7 @@ import { UserListComponent } from './user-list/user-list.component';
 import { CreatePostComponent } from './create-post/create-post.component';
 
 const routes: Routes = [
-  { path: 'homepage', component: HomePageComponent },
+  { path: 'home-page', component: HomePageComponent },
   { path : "login", component: LoginComponent },
   { path: 'chat/:id', component: ChatBoxComponent },
   { path: 'create-account', component: SignupComponent },

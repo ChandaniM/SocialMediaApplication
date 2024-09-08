@@ -1,17 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
-  apiUrl = 'https://your-api-url.com/api/posts'; // replace with your API URL
-
+BASE_URL = environment.apiUrl;
   constructor(private httpClient: HttpClient) { }
 
-  getPosts(): Observable<any[]> {
-    return this.httpClient.get<any[]>(this.apiUrl);
+  getPosts(id:number): Observable<any[]> {
+    return this.httpClient.get<any[]>(this.BASE_URL+"list-of-post",{
+      params: { userId: id.toString() }
+    });
+  }
+
+  addPost(postData:any):Observable<any>{
+    return this.httpClient.post<any>(this.BASE_URL+"add-post" , postData)
   }
 }
 

@@ -6,7 +6,7 @@ const login = require("./router/login");
 const register = require("./router/registeruser");
 const getAllUser = require("./router/userlist");
 const addPostData = require("./router/addpost");
-
+const getAllPost = require("./router/getallpost");
 
 
 const pool = new Pool({
@@ -30,7 +30,7 @@ app.use(register);
 app.use(login); 
 app.use(getAllUser);
 app.use(addPostData);
-
+app.use(getAllPost)
 
 
 
