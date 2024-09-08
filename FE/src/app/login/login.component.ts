@@ -35,7 +35,7 @@ export class LoginComponent {
           localStorage.setItem('UserData', JSON.stringify(response.user));
           this.loginService.islogin();
           alert('Login successful!');
-          this.route.navigate(['/homepage'])
+          this.route.navigate(['/home-page'])
 
         } else {
           localStorage.setItem('isLoggedIn', "false")
