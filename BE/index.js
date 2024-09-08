@@ -4,8 +4,8 @@ const cors = require("cors");
 const { Pool } = require("pg");
 const login = require("./router/login");
 const register = require("./router/registeruser");
-const getAllUser = require("./router/userlist")
-
+const getAllUser = require("./router/userlist");
+const addPostData = require("./router/addpost");
 
 
 
@@ -26,10 +26,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 
-app.use(register)
+app.use(register);
 app.use(login); 
 app.use(getAllUser);
-
+app.use(addPostData);
 
 
 

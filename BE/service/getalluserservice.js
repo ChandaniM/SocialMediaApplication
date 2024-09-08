@@ -1,4 +1,4 @@
-let { get_all_users } = require("../Query/login");
+let { get_all_users } = require("../Query/db-query");
 const { Pool } = require("pg");
 
 const pool = new Pool({
