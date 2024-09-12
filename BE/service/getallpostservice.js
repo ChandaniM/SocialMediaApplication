@@ -23,9 +23,9 @@ const getAllPost = async (userId) => {
 
         const postsWithUserData = posts.map(post => ({
             ...post,
-            user_name: userDetails.username || 'DEFUALT User',
-            user_headline: userDetails.user_headline || '',
-            profile_picture: userDetails.profile_picture || '',
+            username: userDetails.username || 'DEFUALT User',
+            userheadline: userDetails.user_headline || 'Software developer',
+            profile_picture: userDetails.profile_picture || 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-user-2264922221',
         }));
 
         console.log(postsWithUserData);

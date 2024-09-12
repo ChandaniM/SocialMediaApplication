@@ -1,15 +1,20 @@
 <div *ngIf="posts.length > 0; else elseBlock" >
   <div class="card" *ngFor="let post of posts">
       <div class="card-header">
-        <img
-          src="https://via.placeholder.com/50"
-          alt="Profile Picture"
-          class="profile-pic"
-        />
-        <div class="user-info">
-          <h3 class="user-name">{{post.username}}</h3>
-          <p class="user-headline">{{post.user_headline}}</p>
-          <p class="post-time">2h • Edited</p>
+        <div class="user-profile-side">
+          <img
+            src={{post.profile_picture}}
+            alt="Profile Picture"
+            class="profile-pic"
+          />
+          <div class="user-info">
+            <h3 class="user-name">{{post.username}}</h3>
+            <p class="user-headline">{{post.userheadline}}</p>
+            <p class="post-time">2h • Edited</p>
+          </div>
+        </div>
+        <div class="option-con">
+          <img src="/assets/images/dots.png" alt="" class="option">
         </div>
       </div>
       <div class="card-body">
@@ -17,14 +22,15 @@
           {{post.post_content}}
         </p>
         <img
+          *ngIf="post.media_type != 'text'"
           src="https://via.placeholder.com/600x300"
           alt="Post Image"
           class="post-image"
         />
       </div>
       <div class="card-footer">
-        <button class="action-button">Like</button>
-        <button class="action-button">Comment</button>
+        <button class="action-button">{{post.likes_count}} &nbsp;Like</button>
+        <button class="action-button">{{post.comments_count}} &nbsp; Comment</button>
         <button class="action-button">Share</button>
       </div>
   </div>
