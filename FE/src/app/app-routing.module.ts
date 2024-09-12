@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'chat/:id', component: ChatBoxComponent },
   { path: 'create-account', component: SignupComponent },
   {path:'addPost',component:CreatePostComponent},
-  { path: '', redirectTo: '/homepage', pathMatch: 'full' },
+  { path: '', redirectTo: '/home-page', pathMatch: 'full' },
   {path : "chat" , component : UserListComponent},
 ];
 
