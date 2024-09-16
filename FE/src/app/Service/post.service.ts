@@ -19,5 +19,9 @@ BASE_URL = environment.apiUrl;
   addPost(postData:any):Observable<any>{
     return this.httpClient.post<any>(this.BASE_URL+"add-post" , postData)
   }
+
+  addComment(data: any): Observable<any> {
+    return this.httpClient.post<any>(this.BASE_URL+"comment", data);
+  }
 }
 

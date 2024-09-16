@@ -1,13 +1,5 @@
-let {add_user} = require("../Query/db-query");
-const { Pool } = require("pg");
-
-const pool = new Pool({
-  user: "postgres",
-  password: "root",
-  host: "localhost",
-  port: 5432,
-  database: "sharingDB",
-});
+let {add_user} = require("../config/db-query");
+const pool = require("../config/db");
 
 const register = async(username , email, password) => {
     try {
@@ -18,8 +10,6 @@ const register = async(username , email, password) => {
         console.error('Error inserting user', err);
         return { message: 'Error adding user' };
     }
-
-
 }
 module.exports = {
     register,

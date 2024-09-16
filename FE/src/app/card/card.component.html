@@ -30,8 +30,18 @@
       </div>
       <div class="card-footer">
         <button class="action-button">{{post.likes_count}} &nbsp;Like</button>
-        <button class="action-button">{{post.comments_count}} &nbsp; Comment</button>
+        <button class="action-button" (click)="toggleCommentSection(post.id)">{{post.comments_count}} &nbsp; Comment</button>
         <button class="action-button">Share</button>
+      </div>
+      <div *ngIf="post.showCommentSection" class="comment-section">
+        <form (ngSubmit)="addComment(post.id, post)">
+          <input [(ngModel)]="post.newComment" name="comment" placeholder="Add a comment..." required />
+          <button type="submit">Submit</button>
+        </form>
+  
+        <div *ngFor="let comment of post.comments" class="comment">
+          <p>{{comment.text}}</p>
+        </div>
       </div>
   </div>
 </div>

@@ -1,14 +1,6 @@
-let {LoginQuery} = require("../Query/db-query");
-const { Pool } = require("pg");
-
-const pool = new Pool({
-  user: "postgres",
-  password: "root",
-  host: "localhost",
-  port: 5432,
-  database: "sharingDB",
-});
-
+let {LoginQuery} = require("../config/db-query");
+const pool = require("../config/db");
+ 
 async function login(username, password) {
     const result = await pool.query(LoginQuery, [username]);
     const user = result.rows[0];

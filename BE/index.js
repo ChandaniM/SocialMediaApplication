@@ -7,7 +7,7 @@ const register = require("./router/registeruser");
 const getAllUser = require("./router/userlist");
 const addPostData = require("./router/addpost");
 const getAllPost = require("./router/getallpost");
-
+const comment = require("./router/comment")
 
 const pool = new Pool({
   user: "postgres",
@@ -30,8 +30,8 @@ app.use(register);
 app.use(login); 
 app.use(getAllUser);
 app.use(addPostData);
-app.use(getAllPost)
-
+app.use(getAllPost);
+app.use(comment);
 
 
 const server = app.listen(port, () => {

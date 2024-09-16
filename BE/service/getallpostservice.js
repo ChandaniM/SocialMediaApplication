@@ -1,13 +1,5 @@
-const { get_all_post  , get_user_details} = require("../Query/db-query");
-const { Pool } = require("pg");
-
-const pool = new Pool({
-    user: "postgres",
-    password: "root",
-    host: "localhost",
-    port: 5432,
-    database: "sharingDB",
-});
+const { get_all_post  , get_user_details} = require("../config/db-query");
+const pool = require("../config/db");
 
 const getAllPost = async (userId) => {
     try {

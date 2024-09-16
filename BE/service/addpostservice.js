@@ -1,13 +1,6 @@
-let { add_post_data } = require("../Query/db-query");
-const { Pool } = require("pg");
+let { add_post_data } = require("../config/db-query");
+const pool = require("../config/db");
 
-const pool = new Pool({
-    user: "postgres",
-    password: "root",
-    host: "localhost",
-    port: 5432,
-    database: "sharingDB",
-});
 const addPost = (postData) => {
     let { user_id, post_content, media_type, created_at, likes_count, comments_count } = postData;
     let values = [user_id, post_content, media_type, created_at, likes_count, comments_count];
