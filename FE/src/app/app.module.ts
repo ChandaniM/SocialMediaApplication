@@ -11,6 +11,9 @@ import { UserListComponent } from './user-list/user-list.component';
 import { ChatBoxComponent } from './chat-box/chat-box.component';
 import { FormsModule } from '@angular/forms';
 import { CreatePostComponent } from './create-post/create-post.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatIconModule} from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,10 @@ import { CreatePostComponent } from './create-post/create-post.component';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatIconModule,
+    MatSnackBarModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

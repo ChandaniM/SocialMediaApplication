@@ -17,6 +17,6 @@
     </ul>
   </nav>
   <div class="post">
-    <app-card [posts]="posts"></app-card>
+    <app-card [posts]="posts"  (cardEmit)="logCredentials($event)"></app-card>
   </div>
 </div>

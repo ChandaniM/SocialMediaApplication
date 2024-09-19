@@ -1,38 +1,46 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { PostService } from '../Service/post.service';
+import { find, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-card',
   templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss']
+  styleUrls: ['./card.component.scss'],
 })
 export class CardComponent {
+  listOfComment: Array<any> = [];
+  @Input() posts: Array<any> = [];
+  @Output() cardEmit: EventEmitter<any> = new EventEmitter();
 
-@Input() posts : Array<any> =[];
-  constructor(public postService : PostService){
+  constructor(private postService: PostService) { }
 
-  }
-  toggleCommentSection(postId: number) {
-    const post = this.posts.find(p => p.id === postId);
+
+  toggleCommentSection(postId: number): void {
+    const post = this.posts.find((p) => p.id === postId);
     if (post) {
       post.showCommentSection = !post.showCommentSection;
     }
   }
-  addComment(postId: number, post: any) {
-    if (post.newComment) {
-      const apiData = {
-        "post_id": postId,
-        "comment_text": post.newComment
-      };
 
-      this.postService.addComment(apiData).subscribe((response) => {
-        console.log('Comment added:', response);
-        // Update the comments count and clear the input
-        post.comments_count += 1;
-        post.newComment = ''; // Clear the input field
-        post.comments.push({ text: apiData.comment_text }); // Assuming the response contains the new comment
-      });
-    }
+  addComment(postId: number, post: any, content: string): void {
+    if (!content.trim()) return;
+
+    const apiData = {
+      id: post.id,
+      user_id: post.user_id,
+      post_content: content,
+      updated_at: post.updated_at ? post.updated_at : post.created_at,
+      created_at: post.created_at,
+    };
+    this.postService.addComment(apiData).subscribe(response => {
+      if (response) {
+        this.updatePostData()
+      }
+    })
+
+  }
+  updatePostData() {
+    this.cardEmit.emit(true)
   }
 
 }
