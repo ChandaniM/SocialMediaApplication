@@ -16,7 +16,9 @@
     </div>
   
     <input type="file" #fileInput (change)="onFileSelected($event)" hidden />
-    <img *ngIf="imagePreview" [src]="imagePreview" alt="Image Preview" class="image-preview" />
+    <div *ngIf="imagePreview">
+      <img [src]="imagePreview" alt="Image Preview" />
+    </div>
     
     <button class="submit-button" (click)="submitPost()">Post</button>
   </div>

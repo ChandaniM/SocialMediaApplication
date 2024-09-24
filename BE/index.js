@@ -9,8 +9,7 @@ const getAllPost = require("./router/getallpost");
 const comment = require("./router/comment")
 const addComment = require("./router/addcommentonpost")
 const  getList = require('./router/commentlist')
-
-
+const upload = require("./router/upload");
 const port = 3000;
 const app = express();
 app.use(cors({ origin: "*" }));
@@ -27,7 +26,12 @@ app.use(getAllPost);
 app.use(comment);
 app.use(addComment)
 app.use(getList);
+app.use(upload);
 
+app.use(express.json());
+app.get("/",(req,res)=>{
+  res.send("hello from backend")
+})
 const server = app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });

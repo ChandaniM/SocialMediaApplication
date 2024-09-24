@@ -1,9 +1,9 @@
 let {add_user} = require("../config/db-query");
 const pool = require("../config/db");
 
-const register = async(username , email, password) => {
+const register = async(username , email, password , user_headline) => {
     try {
-        const result = await pool.query(add_user, [username, email, password]);
+        const result = await pool.query(add_user, [username, email, password , user_headline]);
         console.log(result.rows[0], 'Data inserted successfully');
        return { message: 'User added successfully', user: result.rows[0] };
     } catch (err) {

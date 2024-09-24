@@ -11,17 +11,23 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class CreatePostComponent {
   nameOfUsers: string = '';
   postContent: string = '';
+  selectedFile: File | null = null; // Store the selected file
   imagePreview: string | ArrayBuffer | null = null;
-  
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('options') optionsTemplate!: TemplateRef<any>;
-  
-  constructor(private postService: PostService, private route: Router,private snackBar: MatSnackBar) {}
+
+  constructor(
+    private postService: PostService,
+    private route: Router,
+    private snackBar: MatSnackBar
+  ) {}
+
   cancelPost() {}
+
   onImageUploadClick() {
-    
     this.fileInput.nativeElement.click();
   }
+
   openOptions() {
     this.snackBar.openFromTemplate(this.optionsTemplate, {
       duration: 3000,
@@ -29,14 +35,53 @@ export class CreatePostComponent {
       verticalPosition: 'bottom',
     });
   }
+
   onFileSelected(event: any) {
-    console.log(event , "hdie")
     const input = event.target as HTMLInputElement;
-    this.imagePreview = input.value;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0]; // Get the selected file
+      console.log(this.selectedFile)
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagePreview = e.target?.result ?? null; // Use optional chaining and a fallback to handle undefined
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
   }
+  
+
+  uploadImage() {
+    if (this.selectedFile) {
+      const formData = new FormData();
+      console.log(this.selectedFile)
+      formData.append('file', this.selectedFile, this.selectedFile.name);
+
+      // Call the service to upload the image
+      this.postService.uploadPost(formData).subscribe(
+        (response) => {
+          console.log('Upload successful:', response);
+          this.route.navigate(['home-page'])
+          // Handle success (e.g., show a success message)
+        },
+        (error) => {
+          console.error('Upload failed:', error);
+          // Handle error (e.g., show an error message)
+        }
+      );
+    } else {
+      console.error('No file selected');
+    }
+  }
+
   submitPost() {
+    if(this.imagePreview){
+      console.log(this.imagePreview)
+      this.uploadImage()
+      // this.postService.getImage()
+    }
     let date = new Date();
-    let createdDate = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+    let createdDate =
+      date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
     if (this.postContent.trim()) {
       const postData = {
         user_id: JSON.parse(localStorage.getItem('UserData') || '{}')['id'],
@@ -57,6 +102,7 @@ export class CreatePostComponent {
       }
     }
   }
+
   addMedia() {
     console.log('Add Media');
     // Logic to handle adding media
