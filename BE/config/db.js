@@ -2,8 +2,8 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
     user: 'postgres',
-    host: 'some-postgres',
-    database: 'sharingDB',
+    host: 'postgresql://postgres:root@db:5432/sharing_db',
+    database: 'sharing_db',
     password: 'root',
     port: 5432,
 });
@@ -16,3 +16,4 @@ pool.connect()
         console.error('Connection error', err.stack);
     });
 module.exports = pool;
+// postgresql://username:password@host:port/database
