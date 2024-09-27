@@ -60,6 +60,7 @@ export class CreatePostComponent {
       this.postService.uploadPost(formData).subscribe(
         (response) => {
           console.log('Upload successful:', response);
+          
           this.route.navigate(['home-page'])
           // Handle success (e.g., show a success message)
         },
@@ -89,7 +90,6 @@ export class CreatePostComponent {
         media_type: 'text',
         created_at: createdDate,
         likes_count: 0,
-        comments_count: 0,
       };
       console.log(postData);
       if (postData.user_id != '') {

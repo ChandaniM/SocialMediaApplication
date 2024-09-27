@@ -3,7 +3,8 @@ const pool = require("../config/db");
 
 const register = async(username , email, password ) => {
     try {
-        const result = await pool.query(add_user, [username, email, password ]);
+        console.log(" HELLO FROM SERVICE")
+        const result = await pool.query("INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *", [username, email, password ]);
         console.log(result.rows[0], 'Data inserted successfully');
        return { message: 'User added successfully', user: result.rows[0] };
     } catch (err) {

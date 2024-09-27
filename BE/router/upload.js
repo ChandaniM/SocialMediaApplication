@@ -3,6 +3,8 @@ const multer = require('multer');
 const AWS = require('aws-sdk');
 const router = express.Router();
 const upload = multer();
+var fs = require('fs');
+var dir = './images';
 
 const s3 = new AWS.S3({
   endpoint: 'http://localstack:4566',  // LocalStack endpoint
@@ -19,6 +21,29 @@ s3.createBucket({ Bucket: bucketName }, (err, data) => {
     console.log('Error creating bucket:', err);
   } else {
     console.log('Bucket ready:', bucketName);
+    const bucketPolicy = {
+      Version: "2012-10-17",
+      Statement: [
+        {
+          Sid: "PublicReadGetObject",
+          Effect: "Allow",
+          Principal: "*",  // Allow everyone
+          Action: "s3:GetObject",  // Only allow reading objects
+          Resource: `arn:aws:s3:::${bucketName}/*`  // Apply policy to all objects in the bucket
+        }
+      ]
+    };
+    const putPolicyParams = {
+      Bucket: bucketName,
+      Policy: JSON.stringify(bucketPolicy),
+    };
+    s3.putBucketPolicy(putPolicyParams, (err, data) => {
+      if (err) {
+        console.error('Error setting bucket policy:', err);
+      } else {
+        console.log('Bucket policy set to public successfully');
+      }
+    });
   }
 });
 
@@ -35,6 +60,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     Bucket: bucketName,
     Key: file.originalname,
     Body: file.buffer,
+    ACL: 'public-read',
   };
   console.log(params , "this is my params:::::::::::::")
   try {
@@ -54,27 +80,58 @@ router.get('/list-buckets', (req, res) => {
       console.log('Error listing buckets:', err);
       return res.status(500).json({ message: 'Failed to list buckets.' });
     }
+    
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+      express.static(path.join(__dirname, './images'))
+      }
     res.status(200).json(data.Buckets);
   });
 });
+
+// List uploaded images
+router.get('/list-images', async (req, res) => {
+  const params = {
+    Bucket: bucketName,
+  };
+
+  try {
+    const data = await s3.listObjectsV2(params).promise();
+    const images = data.Contents.map((item) => ({
+      key: item.Key,  // Key (filename) of the image
+      url: `http://localhost:4566/${bucketName}/${encodeURIComponent(item.Key)}`, // Construct public URL for image
+    }));
+
+    res.status(200).json(images);
+  } catch (err) {
+    console.error('Error listing images:', err);
+    res.status(500).send('Error listing images');
+  }
+});
+
 
 
 // Image fetch route
 router.get('/image/:key', (req, res) => {
   const params = {
     Bucket: bucketName,
-    Key: req.params.key,
+    Key: req.params.key,  
   };
-console.log(params , "this is my params")
+
   s3.getObject(params, (err, data) => {
     if (err) {
-      console.error('Error getting image:', err);
-      return res.status(500).send('Error getting image');
+      console.error('Error fetching image:', err);
+      return res.status(500).send('Error fetching image');
     }
 
-    // Set the content type based on the file extension
-    res.set('Content-Type', data.ContentType);
-    res.send(data.Body);
+    // Set the correct content type (e.g., image/png, image/jpeg)
+    if (data.ContentType) {
+      res.set('Content-Type', data.ContentType);
+    } else {
+      res.set('Content-Type', 'image/png');  // Default to PNG if content type is not available
+    }
+    console.log(data.Body,"this is my data.body")
+    res.send(data.Body);  // Send the image data as the response
   });
 });
 
