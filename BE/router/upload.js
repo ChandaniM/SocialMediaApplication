@@ -2,6 +2,21 @@ const express = require('express');
 const multer = require('multer');
 const AWS = require('aws-sdk');
 const router = express.Router();
+const pool = require("../config/db");
+
+const addPost = async (postData) => {
+    let { user_id, post_content, media_type, created_at, likes_count , images} = postData;
+    let values = [user_id, post_content, media_type, created_at, likes_count , images];
+    console.log(postData , "::::: THIS IS ADD_POST_DATA FROM SERVICES  ::")
+    try {
+        const result = await pool.query("INSERT INTO user_posts (user_id, post_content, media_type, created_at, likes_count,images) VALUES ($1, $2, $3, $4, $5,$6)", values);
+        console.log(result , "this is from add post service")
+        return "Data inserted successfully"
+    } catch (err) {
+        console.error("Error inserting data", err);
+        return "Error inserting data"
+    }
+}
 const upload = multer();
 var fs = require('fs');
 var dir = './images';
@@ -49,28 +64,136 @@ s3.createBucket({ Bucket: bucketName }, (err, data) => {
 
 // Upload route
 // Upload the file to S3
-router.post('/upload', upload.single('file'), async (req, res) => {
-  if (!req.file) {
-    console.log('No file uploaded');
-    return res.status(400).send('No file uploaded');
-  }
+// router.post('/upload', upload.single('file'), async (req, res) => {
 
+//   const file = req.file;
+//   const imageData = {
+//     Bucket: bucketName,
+//     Key: file.originalnam,  
+//   };
+
+//  let result =  s3.getObject(imageData, (err, data) => {
+//     if (err) {
+//       console.error('Error fetching image:', err);
+//       return res.status(500).send('Error fetching image');
+//     }
+
+//     // Set the correct content type (e.g., image/png, image/jpeg)
+//     if (data.ContentType) {
+//       res.set('Content-Type', data.ContentType);
+//     } else {
+//       res.set('Content-Type', 'image/png');  // Default to PNG if content type is not available
+//     }
+//     console.log(data.Body,"this is my data.body")
+//     res.send(data.Body);  // Send the image data as the response
+//   });
+//   console.log("IMAGE RESULT FROM GEToBJECT" , result)
+//   // Access the other fields sent along with the file
+//   const postContent = req.body.post_content; 
+//   const mediaType = req.body.media_type; 
+//   const userId = req.body.user_id; 
+//   const createdAt = req.body.created_at; 
+//   const likesCount = req.body.likes_count; 
+//   console.log(file.originalname , "")
+//   let object = {
+//     user_id: userId,
+//     post_content: postContent,
+//     media_type: mediaType,
+//     created_at: createdAt,
+//     likes_count: likesCount,
+//     images : file.originalname
+//   }
+//   console.log(object , "this is object")
+//   addPost(object)
+//   console.log('Post Content:', postContent);
+//   console.log('Media Type:', mediaType);
+//   console.log('User ID:', userId);
+//   console.log('Created At:', createdAt);
+//   console.log('Likes Count:', likesCount);
+//   if (!req.file) {
+//     console.log('No file uploaded');
+//     return res.status(400).send('No file uploaded');
+//   }
+
+//   const params = {
+//     Bucket: bucketName,
+//     Key: file.originalname,
+//     Body: file.buffer,
+//     ACL: 'public-read',
+//   };
+//   console.log(params , "this is my params:::::::::::::")
+//   try {
+//     console.log('Uploading file to S3...');
+//     await s3.putObject(params).promise();
+//     console.log('File uploaded successfully');
+//     res.status(200).send('File uploaded successfully');
+//   } catch (err) {
+//     console.error('Error uploading file:', err);
+//     res.status(500).send('Failed to upload file');
+//   }
+// });
+// Upload route
+// Upload the file to S3 and return its URL in the response
+router.post('/upload', upload.single('file'), async (req, res) => {
   const file = req.file;
+  
+ 
+  // Access the other fields sent along with the file
+  const postContent = req.body.post_content; 
+  const mediaType = req.body.media_type; 
+  const userId = req.body.user_id; 
+  const createdAt = req.body.created_at; 
+  const likesCount = req.body.likes_count;
+
+  // Define the S3 upload parameters
   const params = {
     Bucket: bucketName,
-    Key: file.originalname,
-    Body: file.buffer,
-    ACL: 'public-read',
+    Key: file.originalname,  // File name to save in S3
+    Body: file.buffer,       // File content
+    ACL: 'public-read',      // Make the file publicly accessible
   };
-  console.log(params , "this is my params:::::::::::::")
+
+  console.log(params, "this is my params:::::::::::::");
+
   try {
+    // Upload the file to S3
     console.log('Uploading file to S3...');
     await s3.putObject(params).promise();
     console.log('File uploaded successfully');
-    res.status(200).send('File uploaded successfully');
+
+    // Construct the public URL of the uploaded file
+    const imageUrl = `http://localhost:4566/${bucketName}/${encodeURIComponent(file.originalname)}`;
+    
+    // Prepare the post data object 
+    let postData = {
+      user_id: userId,
+      post_content: postContent,
+      media_type: mediaType,
+      created_at: createdAt,
+      likes_count: likesCount,
+      images: imageUrl, // Save the file name in the database
+    };
+
+    console.log(postData, "this is postData object");
+
+    // Call addPost to save the post information in the database
+    const dbResponse = await addPost(postData);
+    if (!file) {
+      console.log('No file uploaded');
+     return  dbResponse
+    }
+  
+    // Send the response with the post details and the uploaded image URL
+    res.status(200).json({
+      message: 'File uploaded successfully and post created',
+      imageUrl: imageUrl,  // Send back the image URL
+      postDetails: postData,  // Send back the post data (optional)
+      dbResponse: dbResponse, // Database response (success or error)
+    });
+
   } catch (err) {
-    console.error('Error uploading file:', err);
-    res.status(500).send('Failed to upload file');
+    console.error('Error uploading file or saving post:', err);
+    res.status(500).send('Failed to upload file or save post');
   }
 });
 
@@ -135,11 +258,5 @@ router.get('/image/:key', (req, res) => {
   });
 });
 
-module.exports = router;
-// docker run --name some-postgres --network social-media-network -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=root -e POSTGRES_DB=sharingDB -p 5432:5432 -d postgres
-// docker run -d --rm -it --network social-media-network -p 4566:4566 -p 4510-4559:4510-4559 localstack/localstack
-// docker run --network social-media-network -p 127.0.0.1:3000:3000 back-f
 
-// social-media-network
-// docker network inspect social-media-network
-// docker stop 90d570a61704
+module.exports = router;

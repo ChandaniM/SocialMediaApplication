@@ -25,9 +25,10 @@ export class PostService {
   }
   uploadPost(formData: FormData) {
     return this.httpClient.post(`${this.BASE_URL}upload`, formData, {
-      responseType: 'text', // Ensure the response type is 'text'
+      responseType: 'text',
     });
   }
+  
   getImage(imageKey: string): Observable<Blob> {
     return this.httpClient.get(`${this.BASE_URL}/image/${imageKey}`, {
       responseType: 'blob'

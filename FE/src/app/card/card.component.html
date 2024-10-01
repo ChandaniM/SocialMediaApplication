@@ -18,7 +18,7 @@
         {{post.id}}
         {{post.post_content}}
       </p>
-      <img *ngIf="post.media_type != 'text'" src="https://via.placeholder.com/600x300" alt="Post Image"
+      <img *ngIf="post.media_type != 'text' && post.images != ''"[src]="post.images!= '' ? post.images :'https://via.placeholder.com/600x300'" alt="Post Image"
         class="post-image" />
     </div>
     <div class="card-footer">

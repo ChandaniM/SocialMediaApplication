@@ -2,6 +2,14 @@ import { Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
 import { PostService } from '../Service/post.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+export interface PostData {
+  user_id: string;
+  post_content: string;
+  media_type: string;
+  created_at: string;
+  likes_count: number;
+  [key: string]: any; // This line allows dynamic property access
+}
 
 @Component({
   selector: 'app-create-post',
@@ -57,52 +65,95 @@ export class CreatePostComponent {
       formData.append('file', this.selectedFile, this.selectedFile.name);
 
       // Call the service to upload the image
+    } else {
+      console.error('No file selected');
+    }
+  }
+  submitPost() {
+    let date = new Date();
+    const userId = JSON.parse(localStorage.getItem('UserData') || '{}')['id'];
+    
+    if (userId) {
+      const formData = new FormData();
+      
+      // Append post content and other data
+      const postData :PostData = {
+        user_id: userId,
+        post_content: this.postContent,
+        media_type: this.selectedFile ? 'media' : 'text',
+        created_at: this.formatDate(date),
+        likes_count: 0,
+      };
+
+      for (const key in postData) {
+        if (postData.hasOwnProperty(key)) {
+          formData.append(key, postData[key]);
+        }
+      }
+
+      // If a file was selected, append it to the FormData object
+      if (this.selectedFile) {
+        formData.append('file', this.selectedFile, this.selectedFile.name);
+      }
+
+      // Send the combined FormData with both post and file
       this.postService.uploadPost(formData).subscribe(
         (response) => {
           console.log('Upload successful:', response);
-          
-          this.route.navigate(['home-page'])
-          // Handle success (e.g., show a success message)
+          this.route.navigate(['home-page']);
+          // Optionally, show a success message
         },
         (error) => {
           console.error('Upload failed:', error);
           // Handle error (e.g., show an error message)
         }
       );
+
+      // Reset post content and selected file after submission
+      this.postContent = '';
+      this.selectedFile = null;
+      this.imagePreview = null; // Reset the preview if needed
     } else {
-      console.error('No file selected');
+      console.error('User ID not found');
     }
   }
 
-  submitPost() {
-    if(this.imagePreview){
-      console.log(this.imagePreview)
-      this.uploadImage()
-      // this.postService.getImage()
-    }
-    let date = new Date();
-    let createdDate =
-      date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
-    if (this.postContent.trim()) {
-      const postData = {
-        user_id: JSON.parse(localStorage.getItem('UserData') || '{}')['id'],
-        post_content: this.postContent,
-        media_type: 'text',
-        created_at: createdDate,
-        likes_count: 0,
-      };
-      console.log(postData);
-      if (postData.user_id != '') {
-        this.postService.addPost(postData).subscribe((data) => {
-          console.log(data);
-          alert(data['message']);
-          this.postContent = '';
-          this.route.navigate(['/home-page']);
-        });
-      }
-    }
-  }
+  // submitPost() {
+  //   if(this.imagePreview){
+  //     console.log(this.imagePreview)
+  //     this.uploadImage()
+  //     // this.postService.getImage()
+  //   }
+  //   let date = new Date();
+  //  if (this.postContent.trim()) {
+  //     const postData = {
+  //       user_id: JSON.parse(localStorage.getItem('UserData') || '{}')['id'],
+  //       post_content: this.postContent,
+  //       media_type: 'text',
+  //       created_at: this.formatDate(date),
+  //       likes_count: 0,
+  //     };
+  //     console.log(postData);
+  //     if (postData.user_id != '') {
+  //       this.postService.addPost(postData).subscribe((data) => {
+  //         console.log(data);
+  //         alert(data['message']);
+  //         this.postContent = '';
+  //         this.route.navigate(['/home-page']);
+  //       });
+  //     }
+  //   }
+  // }
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
 
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
   addMedia() {
     console.log('Add Media');
     // Logic to handle adding media
