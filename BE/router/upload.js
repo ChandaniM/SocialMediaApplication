@@ -62,132 +62,55 @@ s3.createBucket({ Bucket: bucketName }, (err, data) => {
   }
 });
 
-// Upload route
-// Upload the file to S3
-// router.post('/upload', upload.single('file'), async (req, res) => {
 
-//   const file = req.file;
-//   const imageData = {
-//     Bucket: bucketName,
-//     Key: file.originalnam,  
-//   };
-
-//  let result =  s3.getObject(imageData, (err, data) => {
-//     if (err) {
-//       console.error('Error fetching image:', err);
-//       return res.status(500).send('Error fetching image');
-//     }
-
-//     // Set the correct content type (e.g., image/png, image/jpeg)
-//     if (data.ContentType) {
-//       res.set('Content-Type', data.ContentType);
-//     } else {
-//       res.set('Content-Type', 'image/png');  // Default to PNG if content type is not available
-//     }
-//     console.log(data.Body,"this is my data.body")
-//     res.send(data.Body);  // Send the image data as the response
-//   });
-//   console.log("IMAGE RESULT FROM GEToBJECT" , result)
-//   // Access the other fields sent along with the file
-//   const postContent = req.body.post_content; 
-//   const mediaType = req.body.media_type; 
-//   const userId = req.body.user_id; 
-//   const createdAt = req.body.created_at; 
-//   const likesCount = req.body.likes_count; 
-//   console.log(file.originalname , "")
-//   let object = {
-//     user_id: userId,
-//     post_content: postContent,
-//     media_type: mediaType,
-//     created_at: createdAt,
-//     likes_count: likesCount,
-//     images : file.originalname
-//   }
-//   console.log(object , "this is object")
-//   addPost(object)
-//   console.log('Post Content:', postContent);
-//   console.log('Media Type:', mediaType);
-//   console.log('User ID:', userId);
-//   console.log('Created At:', createdAt);
-//   console.log('Likes Count:', likesCount);
-//   if (!req.file) {
-//     console.log('No file uploaded');
-//     return res.status(400).send('No file uploaded');
-//   }
-
-//   const params = {
-//     Bucket: bucketName,
-//     Key: file.originalname,
-//     Body: file.buffer,
-//     ACL: 'public-read',
-//   };
-//   console.log(params , "this is my params:::::::::::::")
-//   try {
-//     console.log('Uploading file to S3...');
-//     await s3.putObject(params).promise();
-//     console.log('File uploaded successfully');
-//     res.status(200).send('File uploaded successfully');
-//   } catch (err) {
-//     console.error('Error uploading file:', err);
-//     res.status(500).send('Failed to upload file');
-//   }
-// });
-// Upload route
-// Upload the file to S3 and return its URL in the response
 router.post('/upload', upload.single('file'), async (req, res) => {
   const file = req.file;
-  
- 
-  // Access the other fields sent along with the file
   const postContent = req.body.post_content; 
   const mediaType = req.body.media_type; 
   const userId = req.body.user_id; 
   const createdAt = req.body.created_at; 
-  const likesCount = req.body.likes_count;
+  const likesCount = req.body.likes_count; 
 
-  // Define the S3 upload parameters
-  const params = {
-    Bucket: bucketName,
-    Key: file.originalname,  // File name to save in S3
-    Body: file.buffer,       // File content
-    ACL: 'public-read',      // Make the file publicly accessible
-  };
-
-  console.log(params, "this is my params:::::::::::::");
+  let imageUrl = '';  // Default empty image URL
 
   try {
-    // Upload the file to S3
-    console.log('Uploading file to S3...');
-    await s3.putObject(params).promise();
-    console.log('File uploaded successfully');
+    if (file) {
+      const params = {
+        Bucket: bucketName,
+        Key: file.originalname,  // File name to save in S3
+        Body: file.buffer,       // File content
+        ACL: 'public-read',      // Make the file publicly accessible
+      };
+      
+      // Upload the file to S3
+      console.log('Uploading file to S3...');
+      await s3.putObject(params).promise();
+      console.log('File uploaded successfully');
+      
+      // Construct image URL after upload
+      imageUrl = `http://localhost:4566/${bucketName}/${encodeURIComponent(file.originalname)}`;
+    }
 
-    // Construct the public URL of the uploaded file
-    const imageUrl = `http://localhost:4566/${bucketName}/${encodeURIComponent(file.originalname)}`;
-    
-    // Prepare the post data object 
+    // Prepare post data
     let postData = {
       user_id: userId,
       post_content: postContent,
       media_type: mediaType,
       created_at: createdAt,
       likes_count: likesCount,
-      images: imageUrl, // Save the file name in the database
+      images: imageUrl, // Save the image URL (or empty string if no file)
     };
 
     console.log(postData, "this is postData object");
 
-    // Call addPost to save the post information in the database
+    // Insert into the database
     const dbResponse = await addPost(postData);
-    if (!file) {
-      console.log('No file uploaded');
-     return  dbResponse
-    }
-  
-    // Send the response with the post details and the uploaded image URL
+
+    // Send response
     res.status(200).json({
-      message: 'File uploaded successfully and post created',
-      imageUrl: imageUrl,  // Send back the image URL
-      postDetails: postData,  // Send back the post data (optional)
+      message: 'Post created successfully',
+      imageUrl: imageUrl,  // Send back the image URL (if exists)
+      postDetails: postData,  // Send back the post data
       dbResponse: dbResponse, // Database response (success or error)
     });
 

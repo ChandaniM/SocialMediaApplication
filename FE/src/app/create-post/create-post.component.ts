@@ -30,7 +30,9 @@ export class CreatePostComponent {
     private snackBar: MatSnackBar
   ) {}
 
-  cancelPost() {}
+  cancelPost() {
+    this.route.navigate(['home-page']);
+  }
 
   onImageUploadClick() {
     this.fileInput.nativeElement.click();
