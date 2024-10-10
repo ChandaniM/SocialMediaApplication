@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS user_posts (
     media_type VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     likes_count INTEGER DEFAULT 0,
-    images  VARCHAR(50),
+    images  VARCHAR(100),
     CONSTRAINT user_posts_user_id_fkey FOREIGN KEY (user_id)
         REFERENCES users (id)
         ON UPDATE NO ACTION
