@@ -29,6 +29,9 @@ export class HomePageComponent {
   postData(id:number){
     this.postService.getPosts(id).subscribe({
       next: (posts) => {
+        posts.map(e=>{
+          e["isVideo"] = e.images != '' && (e.images.split(".")?.at(-1)) == 'mp4' ? true : false;
+        })
         this.posts = posts;
         console.log('Posts:', this.posts);  // This will correctly show the posts after they are fetched
       },
