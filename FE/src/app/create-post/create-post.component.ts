@@ -60,7 +60,10 @@ export class CreatePostComponent {
     }
   }
   
-
+  clearFile(){
+    this.selectedFile = null;
+    this.imagePreview = null;
+  }
   uploadImage() {
     if (this.selectedFile) {
       const formData = new FormData();

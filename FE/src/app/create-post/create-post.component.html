@@ -17,6 +17,7 @@
   
     <input type="file" #fileInput (change)="onFileSelected($event)" hidden accept="image/png, image/jpeg , video/mp4" />
     <div *ngIf="imagePreview" class="parent-preview">
+      <mat-icon (click)="clearFile()">clear</mat-icon>
       <img [src]="imagePreview" alt="Image Preview" class="preview" *ngIf="!isVideoUploaded" />
       <video width="100%" controls *ngIf="isVideoUploaded">
         <source [src]="imagePreview" type="video/mp4">
