@@ -23,6 +23,7 @@ export class CreatePostComponent {
   imagePreview: string | ArrayBuffer | null = null;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('options') optionsTemplate!: TemplateRef<any>;
+  isVideoUploaded : boolean = false;
 
   constructor(
     private postService: PostService,
@@ -50,7 +51,7 @@ export class CreatePostComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0]; // Get the selected file
-      console.log(this.selectedFile)
+      this.isVideoUploaded = this.selectedFile.name.split(".")?.at(-1) == "mp4";
       const reader = new FileReader();
       reader.onload = (e) => {
         this.imagePreview = e.target?.result ?? null; // Use optional chaining and a fallback to handle undefined
@@ -173,6 +174,7 @@ export class CreatePostComponent {
 
   addVideo() {
     console.log('Add Video');
+    this.onImageUploadClick()
     // Logic to handle adding a video
   }
 }

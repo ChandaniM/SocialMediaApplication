@@ -15,9 +15,14 @@
       <mat-icon (click)="openOptions()">more_horiz</mat-icon>
     </div>
   
-    <input type="file" #fileInput (change)="onFileSelected($event)" hidden />
-    <div *ngIf="imagePreview">
-      <img [src]="imagePreview" alt="Image Preview" />
+    <input type="file" #fileInput (change)="onFileSelected($event)" hidden accept="image/png, image/jpeg , video/mp4" />
+    <div *ngIf="imagePreview" class="parent-preview">
+      <img [src]="imagePreview" alt="Image Preview" class="preview" *ngIf="!isVideoUploaded" />
+      <video width="100%" controls *ngIf="isVideoUploaded">
+        <source [src]="imagePreview" type="video/mp4">
+        <source [src]="imagePreview" type="video/ogg">
+        Your browser does not support HTML video.
+      </video>
     </div>
     
     <button class="submit-button" (click)="submitPost()">Post</button>
