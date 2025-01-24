@@ -10,15 +10,16 @@ import { User } from '../login/login.component';
 export class UserListComponent {
   searchTerm: string = '';
   users: User[] = []
-  
-
   filteredUsers: User[] = [];
   selectedUser: User | null = null;
+  userLoginedJson : any = {}
 constructor(private route:Router , public userService:UserService){}
   ngOnInit() {
+    this.userLoginedJson = JSON.parse(localStorage.getItem('UserData') || '{}')
+    console.log(this.userLoginedJson)
     this.userService.getAllUserList().subscribe((value:Array<User>)=>{
-      this.users = value
-      // this.filteredUsers = value;
+      this.users = value.filter(e=>e.id != this.userLoginedJson.id)
+      this.filteredUsers = this.users;
     })
   }
 

@@ -1,4 +1,4 @@
-<div class="chatbox">
+ <div class="chatbox">
     <!-- Chat Header -->
     <div class="chat-header">
       <div class="chat-header-info">
@@ -10,21 +10,22 @@
   
     <!-- Chat Messages -->
     <div class="chat-messages">
-      <div class="message message-received">
-        <p>Hello! How are you?</p>
-        <span class="timestamp">10:30 AM</span>
+      <!-- Loop through messages -->
+      <div *ngFor="let msg of messages" [ngClass]="{'message-sent': msg.sender === 'user', 'message-received': msg.sender === 'receiver'}" class="message">
+        <p>{{ msg.text }}</p>
+        <span class="timestamp">{{ msg.timestamp }}</span>
       </div>
-      <div class="message message-sent">
-        <p>I'm good, thank you! How about you?</p>
-        <span class="timestamp">10:32 AM</span>
-      </div>
-      <!-- Add more messages as needed -->
     </div>
   
     <!-- Chat Input -->
     <div class="chat-input">
-      <input type="text" placeholder="Type a message..." />
-      <button class="send-btn">Send</button>
+      <input
+        type="text"
+        placeholder="Type a message..."
+        [(ngModel)]="message"
+        (keydown.enter)="sendMessage()"
+      />
+      <button class="send-btn" (click)="sendMessage()">Send</button>
     </div>
   </div>
   
